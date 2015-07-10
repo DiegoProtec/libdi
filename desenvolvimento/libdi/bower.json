@@ -1,0 +1,24 @@
+{
+  "name": "libdi",
+  "version": "0.0.0",
+  "homepage": "https://github.com/DiegoProtec/libdi",
+  "authors": [
+    "DiegoProtec <diegoprotec@hotmail.com>"
+  ],
+  "description": "WebService node js Express 4",
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "susy": "~2.2.5"
+  }
+}
