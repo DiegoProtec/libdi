@@ -29,13 +29,14 @@ var myReporter = map(function (file, cb) {
 
 // Sass 
 gulp.task('styles', function() {
-  gulp.src('./public/stylesheets/scss**/*.{scss,sass}')
+  gulp.src('./public/stylesheets/**/*.{scss,sass}')
     .pipe(smaps.init())
     .pipe(sass({
       errLogToConsole: true
       }))
     .pipe(smaps.write())
-    .pipe(gulp.dest('../../teste/public/stylesheets/css'));
+    .pipe(gulp.dest('../../teste/public/stylesheets'));
+    .pipe(notify({ message: 'Tarefa sass completada' }));
 })
 
 // Jade - HTML
@@ -46,6 +47,7 @@ gulp.task('templates', function() {
       locals: YOUR_LOCALS
     }))
     .pipe(gulp.dest('../../teste/public/views/'))
+    .pipe(notify({ message: 'Tarefa templates completada' }));
 });
 
 // Images
@@ -61,15 +63,17 @@ gulp.task('scripts', function() {
   return gulp.src('./public/javascripts/*.js')
     .pipe(jshint())
     .pipe(myReporter);
+    .pipe(notify({ message: 'Tarefa scripts completada' }));
 });
 
 //Minifica CSS
-gulp.task('minify-css', function() {
+gulp.task('minifycss', function() {
   return gulp.src('../../teste/public/stylesheets/css/*.css')
     .pipe(smaps.init())
     .pipe(minifyCss())
     .pipe(smaps.write())
     .pipe(gulp.dest('../../teste/public/stylesheets'));
+    .pipe(notify({ message: 'Tarefa minifycss completada' }));
 });
  
 // Clean
