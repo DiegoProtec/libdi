@@ -12,6 +12,7 @@ var gulp = require('gulp'),
     sass = require('gulp-sass'),
     smaps = equire('gulp-sourcemaps'),
     map = require('map-stream'),
+    jade = require('gulp-jade'),
     del = require('del');
 
 var myReporter = map(function (file, cb) {
@@ -29,16 +30,31 @@ var myReporter = map(function (file, cb) {
 // Sass 
 gulp.task('styles', function() {
   gulp.src('./public/stylesheets/scss**/*.{scss,sass}')
-    .pipe(sourcemaps.init())
+    .pipe(smaps.init())
     .pipe(sass({
       errLogToConsole: true
       }))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./public/stylesheets/css'));
+    .pipe(smaps.write())
+    .pipe(gulp.dest('../../teste/public/stylesheets/css'));
 })
 
 // Jade - HTML
+gulp.task('templates', function() {
+  var YOUR_LOCALS = {};
+  gulp.src('./public/views/jade/*.jade')
+    .pipe(jade({
+      locals: YOUR_LOCALS
+    }))
+    .pipe(gulp.dest('../../teste/public/views/'))
+});
 
+// Images
+gulp.task('images', function() {
+return gulp.src('./public/images/**/*')
+.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+.pipe(gulp.dest('../../teste/public/images/'))
+.pipe(notify({ message: 'Tarefa images completada' }));
+});
 
 // Scripts
 gulp.task('scripts', function() {
@@ -47,12 +63,13 @@ gulp.task('scripts', function() {
     .pipe(myReporter);
 });
 
-// Images
-gulp.task('images', function() {
-return gulp.src('./public/images/**/*')
-.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-.pipe(gulp.dest('./public/images'))
-.pipe(notify({ message: 'Tarefa images completada' }));
+//Minifica CSS
+gulp.task('minify-css', function() {
+  return gulp.src('../../teste/public/stylesheets/css/*.css')
+    .pipe(smaps.init())
+    .pipe(minifyCss())
+    .pipe(smaps.write())
+    .pipe(gulp.dest('../../teste/public/stylesheets'));
 });
  
 // Clean
@@ -62,7 +79,7 @@ del(['./public/stylesheets/scss', './public/javascripts', './public/images'], cb
  
 // Default task
 gulp.task('default', ['clean'], function() {
-gulp.start('styles', 'scripts', 'images');
+gulp.start('styles', , 'templates', 'images', 'scripts', 'minifycss');
 });
  
 // Watch
