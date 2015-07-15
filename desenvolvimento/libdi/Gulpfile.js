@@ -10,7 +10,7 @@ var gulp = require('gulp'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
     sass = require('gulp-sass'),
-    smaps = equire('gulp-sourcemaps'),
+    smaps = require('gulp-sourcemaps'),
     map = require('map-stream'),
     jade = require('gulp-jade'),
     del = require('del');
@@ -29,24 +29,23 @@ var myReporter = map(function (file, cb) {
 
 // Sass 
 gulp.task('styles', function() {
-  gulp.src('./public/stylesheets/**/*.{scss,sass}')
+  gulp.src('./public/stylesheets/sass/**/*.{scss,sass}')
     .pipe(smaps.init())
     .pipe(sass({
       errLogToConsole: true
       }))
     .pipe(smaps.write())
-    .pipe(gulp.dest('../../teste/public/stylesheets'));
+    .pipe(gulp.dest('./public/stylesheets/css/'))
     .pipe(notify({ message: 'Tarefa sass completada' }));
 })
 
 // Jade - HTML
 gulp.task('templates', function() {
-  var YOUR_LOCALS = {};
-  gulp.src('./public/views/jade/*.jade')
+    return gulp.src('./public/views/jade/*.jade')
     .pipe(jade({
-      locals: YOUR_LOCALS
+        pretty: true
     }))
-    .pipe(gulp.dest('../../teste/public/views/'))
+    .pipe(gulp.dest('../../teste/libdi/public/views/'))
     .pipe(notify({ message: 'Tarefa templates completada' }));
 });
 
@@ -54,36 +53,45 @@ gulp.task('templates', function() {
 gulp.task('images', function() {
 return gulp.src('./public/images/**/*')
 .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-.pipe(gulp.dest('../../teste/public/images/'))
+.pipe(gulp.dest('../../teste/libdi/public/images/'))
 .pipe(notify({ message: 'Tarefa images completada' }));
 });
 
 // Scripts
 gulp.task('scripts', function() {
-  return gulp.src('./public/javascripts/*.js')
+  return gulp.src('./public/*.js')
     .pipe(jshint())
     .pipe(myReporter);
-    .pipe(notify({ message: 'Tarefa scripts completada' }));
 });
 
 //Minifica CSS
 gulp.task('minifycss', function() {
-  return gulp.src('../../teste/public/stylesheets/css/*.css')
+  return gulp.src('./public/stylesheets/css/*.css')
     .pipe(smaps.init())
-    .pipe(minifyCss())
+    .pipe(minifycss())
     .pipe(smaps.write())
-    .pipe(gulp.dest('../../teste/public/stylesheets'));
-    .pipe(notify({ message: 'Tarefa minifycss completada' }));
+    .pipe(gulp.dest('../../teste/libdi/public/stylesheets/'));
+});
+
+//Minifica JS
+gulp.task('minifyjs', function() {
+  return gulp.src('.public/javascripts/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('../../teste/libdi/public/javascripts/'))
+    .pipe(notify({ message: 'Tarefa minifyjs completada' }));
 });
  
 // Clean
 gulp.task('clean', function(cb) {
-del(['./public/stylesheets/scss', './public/javascripts', './public/images'], cb)
+del(['../../teste/libdi/stylesheets/', 
+	'../../teste/libdi/public/javascripts/', 
+	'../../teste/libdi/public/images/', 
+	'../../teste/libdi/views/'], {force: true}, cb);
 });
- 
+
 // Default task
 gulp.task('default', ['clean'], function() {
-gulp.start('styles', , 'templates', 'images', 'scripts', 'minifycss');
+gulp.start('styles', 'templates', 'images', 'scripts', 'minifycss', 'minifyjs');
 });
  
 // Watch
