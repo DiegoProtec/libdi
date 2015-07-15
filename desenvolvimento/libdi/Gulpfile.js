@@ -41,11 +41,11 @@ gulp.task('styles', function() {
 
 // Jade - HTML
 gulp.task('templates', function() {
-    return gulp.src('./public/views/jade/*.jade')
+    return gulp.src('./public/views/*.jade')
     .pipe(jade({
         pretty: true
     }))
-    .pipe(gulp.dest('../../teste/libdi/public/views/'))
+    .pipe(gulp.dest('../../teste/libdi/views/'))
     .pipe(notify({ message: 'Tarefa templates completada' }));
 });
 
@@ -83,10 +83,10 @@ gulp.task('minifyjs', function() {
  
 // Clean
 gulp.task('clean', function(cb) {
-del(['../../teste/libdi/stylesheets/*', 
-	'../../teste/libdi/public/javascripts/*', 
-	'../../teste/libdi/public/images/*', 
-	'../../teste/libdi/views/*'], {force: true}, cb);
+del(['../../teste/libdi/stylesheets/*.css', 
+	'../../teste/libdi/public/javascripts/*.js', 
+	'../../teste/libdi/public/images/**/*', 
+	'../../teste/libdi/views/*.html'], {force: true}, cb);
 });
 
 // Default task
@@ -110,6 +110,6 @@ gulp.watch('./public/images/**/*', ['images']);
 livereload.listen();
  
 // Watch any files in dist/, reload on change
-gulp.watch(['./public/**']).on('change', livereload.changed);
+gulp.watch(['./public/**/*']).on('change', livereload.changed);
  
 }); 
