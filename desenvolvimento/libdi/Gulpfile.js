@@ -83,10 +83,10 @@ gulp.task('minifyjs', function() {
  
 // Clean
 gulp.task('clean', function(cb) {
-del(['../../teste/libdi/stylesheets/', 
-	'../../teste/libdi/public/javascripts/', 
-	'../../teste/libdi/public/images/', 
-	'../../teste/libdi/views/'], {force: true}, cb);
+del(['../../teste/libdi/stylesheets/*', 
+	'../../teste/libdi/public/javascripts/*', 
+	'../../teste/libdi/public/images/*', 
+	'../../teste/libdi/views/*'], {force: true}, cb);
 });
 
 // Default task
