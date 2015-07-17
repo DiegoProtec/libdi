@@ -1,12 +1,8 @@
 var gulp = require('gulp'),
-    autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat'),
-    notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
     sass = require('gulp-sass'),
@@ -27,7 +23,7 @@ var myReporter = map(function (file, cb) {
   cb(null, file);
 });
 
-// Sass 
+// Sass
 gulp.task('styles', function() {
   gulp.src('./public/stylesheets/sass/**/*.{scss,sass}')
     .pipe(smaps.init())
@@ -35,26 +31,23 @@ gulp.task('styles', function() {
       errLogToConsole: true
       }))
     .pipe(smaps.write())
-    .pipe(gulp.dest('./public/stylesheets/css/'))
-    .pipe(notify({ message: 'Tarefa sass completada' }));
+    .pipe(gulp.dest('./public/stylesheets/css/')));
 })
 
 // Jade - HTML
 gulp.task('templates', function() {
-    return gulp.src('./public/views/*.jade')
-    .pipe(jade({
-        pretty: true
+  return gulp.src('./views/*.jade')
+    .pipe(jade({ 
+    	pretty: true
     }))
-    .pipe(gulp.dest('../../teste/libdi/views/'))
-    .pipe(notify({ message: 'Tarefa templates completada' }));
+    .pipe(gulp.dest('../../teste/libdi/views/')));
 });
 
 // Images
 gulp.task('images', function() {
 return gulp.src('./public/images/**/*')
 .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-.pipe(gulp.dest('../../teste/libdi/public/images/'))
-.pipe(notify({ message: 'Tarefa images completada' }));
+.pipe(gulp.dest('../../teste/libdi/public/images/')));
 });
 
 // Scripts
@@ -77,8 +70,7 @@ gulp.task('minifycss', function() {
 gulp.task('minifyjs', function() {
   return gulp.src('.public/javascripts/*.js')
     .pipe(uglify())
-    .pipe(gulp.dest('../../teste/libdi/public/javascripts/'))
-    .pipe(notify({ message: 'Tarefa minifyjs completada' }));
+    .pipe(gulp.dest('../../teste/libdi/public/javascripts/'));
 });
  
 // Clean
