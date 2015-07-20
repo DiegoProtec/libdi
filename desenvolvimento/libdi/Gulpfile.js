@@ -9,7 +9,12 @@ var gulp = require('gulp'),
     smaps = require('gulp-sourcemaps'),
     map = require('map-stream'),
     jade = require('gulp-jade'),
-    del = require('del');
+    prefix = require('gulp-autoprefixer'),
+    minifyHTML = require('gulp-minify-html'),
+    del = require('del'),
+    csso = require('gulp-csso'),
+    merge = require('merge-stream'),
+    spritesmith = require('gulp.spritesmith');
 
 var myReporter = map(function (file, cb) {
   if (!file.jshint.success) {
@@ -24,70 +29,94 @@ var myReporter = map(function (file, cb) {
 });
 
 // Sass
-gulp.task('styles', function() {
-  gulp.src('./public/stylesheets/sass/**/*.{scss,sass}')
-    .pipe(smaps.init())
-    .pipe(sass({
-      errLogToConsole: true
-      }))
+gulp.task('styles', function () {
+    sass('./public/stylesheets/sass/**/*.{scss,sass}', 
+      {smaps: true, 
+        style: 'compact',
+        errLogToConsole: true
+      })
+    .pipe(prefix("last 1 version", "> 1%", "ie 8", "ie 7"))
     .pipe(smaps.write())
-    .pipe(gulp.dest('./public/stylesheets/css/')));
-})
+    .pipe(gulp.dest('./public/stylesheets/css/'));
+});
 
 // Jade - HTML
-gulp.task('templates', function() {
+gulp.task('templates', function () {
   return gulp.src('./views/*.jade')
     .pipe(jade({ 
     	pretty: true
     }))
-    .pipe(gulp.dest('../../teste/libdi/views/')));
-});
-
-// Images
-gulp.task('images', function() {
-return gulp.src('./public/images/**/*')
-.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-.pipe(gulp.dest('../../teste/libdi/public/images/')));
+    .pipe(gulp.dest('./views/html/'));
 });
 
 // Scripts
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
   return gulp.src('./public/*.js')
     .pipe(jshint())
     .pipe(myReporter);
 });
 
-//Minifica CSS
-gulp.task('minifycss', function() {
-  return gulp.src('./public/stylesheets/css/*.css')
+// Images
+gulp.task('images', function () {
+  var spriteData = gulp.src('./public/images/**/*').pipe(spritesmith({
+    imgName: 'sprite.png',
+    cssName: 'sprite.css'
+  }));
+  var imgStream = spriteData.img
+    .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+    .pipe(gulp.dest('../../teste/libdi/public/images/'));
+  var cssStream = spriteData.css
+    .pipe(csso())
+    .pipe(gulp.dest('./public/stylesheets/'));
+  return merge(imgStream, cssStream);
+});
+
+//Minifica ---------------------------------------------------------------------------------------
+//Html
+gulp.task('minify-html', ['templates'], function () {
+  var opts = {
+    conditionals: true,
+    spare:true
+  };
+ 
+  return gulp.src('./views/html/*.html')
+    .pipe(minifyHTML(opts))
+    .pipe(gulp.dest('../../teste/libdi/views/'));
+});
+
+//CSS
+gulp.task('minifycss', ['styles'], function () {
+  return gulp.src('./public/stylesheets/**/*.css')
     .pipe(smaps.init())
     .pipe(minifycss())
     .pipe(smaps.write())
     .pipe(gulp.dest('../../teste/libdi/public/stylesheets/'));
 });
 
-//Minifica JS
-gulp.task('minifyjs', function() {
+//JavaScript
+gulp.task('minifyjs', ['scripts'], function() {
   return gulp.src('.public/javascripts/*.js')
-    .pipe(uglify())
+    .pipe(smaps.init())
+      .pipe(uglify())
+      //.pipe(concat('all.min.js'))
+    .pipe(smaps.write())
     .pipe(gulp.dest('../../teste/libdi/public/javascripts/'));
 });
- 
+ //------------------------------------------------------------------------------------------------
+
 // Clean
-gulp.task('clean', function(cb) {
-del(['../../teste/libdi/stylesheets/*.css', 
-	'../../teste/libdi/public/javascripts/*.js', 
-	'../../teste/libdi/public/images/**/*', 
-	'../../teste/libdi/views/*.html'], {force: true}, cb);
+gulp.task('clean', function () {
+  del.sync(['../../teste/libdi/public/**/*{css,js,png,jpg,jpeg,svg}',
+  '../../teste/libdi/views/*.html'], {force: true});
 });
 
 // Default task
-gulp.task('default', ['clean'], function() {
-gulp.start('styles', 'templates', 'images', 'scripts', 'minifycss', 'minifyjs');
+gulp.task('default', ['clean'], function () {
+gulp.start('images', 'minify-html', 'minifycss', 'minifyjs');
 });
  
 // Watch
-gulp.task('watch', function() {
+gulp.task('watch', function () {
  
 // Watch .scss files
 gulp.watch('./public/stylesheets/scss/**/*.scss', ['styles']);
