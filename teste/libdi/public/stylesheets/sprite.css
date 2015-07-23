@@ -1,2 +1,1 @@
-.icon-play{background-image:url(sprite.png);background-position:0 0;width:32px;height:32px}
-/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNwcml0ZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsV0FBVyxpQkFBaUIsZ0JBQWdCLG9CQUFvQixFQUFFLEVBQUUsTUFBTSxLQUFLLE9BQU8iLCJmaWxlIjoic3ByaXRlLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5pY29uLXBsYXl7YmFja2dyb3VuZC1pbWFnZTp1cmwoc3ByaXRlLnBuZyk7YmFja2dyb3VuZC1wb3NpdGlvbjowIDA7d2lkdGg6MzJweDtoZWlnaHQ6MzJweH0iXSwic291cmNlUm9vdCI6Ii9zb3VyY2UvIn0= */
+.icon-pause{background-position:0 0;width:48px;height:48px}.icon-pause,.icon-play{background-image:url(sprite.png)}.icon-play{background-position:-48px 0;width:32px;height:32px}
